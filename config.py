@@ -11,5 +11,5 @@ class Config:
         "appId": os.environ.get('FIREBASE_APP_ID'),
     }
     OAUTHLIB_INSECURE_TRANSPORT = "1"
-    CLIENT_SECRETS_FILE = "/home/andakara/secret-configs/client_secret.json"
+    CLIENT_SECRETS_FILE = "D:/secret-configs/client_secret.json"
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'birjon'
