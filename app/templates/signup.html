@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="bg-primary py-3 py-md-5 py-xl-8">
+    <div class="container">
+        <div class="row gy-4 align-items-center">
+        <div class="col-12 col-md-6 col-xl-7">
+            <div class="d-flex justify-content-center text-bg-primary">
+            <div class="col-12 col-xl-9">   
+                <h2 class="h1 mb-4">QuantifyIQ</h2>
+                <p class="lead mb-5">Tallying the pulse of progress with precision, harnessing the boundless potential of IoT to count, track, and optimize, paving the way for smarter inventory management and seamless operations.</p>
+                <div class="text-endx">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-grip-horizontal" viewBox="0 0 16 16">
+                    <path d="M2 8a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-5">
+            <div class="card border-0 rounded-4">
+            <div class="card-body p-3 p-md-4 p-xl-5">
+                <div class="row">
+                <div class="col-12">
+                    <div class="mb-4">
+                    <h3>Daftar</h3>
+                    </div>
+                </div>
+                </div>
+                <form id="registrationForm" method="POST" novalidate>
+                    {{ register.hidden_tag() }}
+                <div class="row gy-4 overflow-hidden">
+                    <div class="col-12">
+                        <div class="form-floating mb-1">
+                            {{ register.nama_lengkap(class="form-control", id="typeNamaX", placeholder="Nama Lengkap") }}
+                            {{ register.nama_lengkap.label(class="form-label") }}
+                            {% for error in register.nama_lengkap.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        </div>
+
+                    <div class="col-12">
+                    <div class="form-floating mb-1">
+                        {{ register.email(class="form-control", id="typeEmailX", placeholder="Email") }}
+                        {{ register.email.label(class="form-label") }}
+                        {% for error in register.email.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    </div>
+
+                    <div class="col-12">
+                    <div class="form-floating mb-1">
+                        {{ register.password(class="form-control", id="typePasswordX", placeholder="Kata Sandi") }}
+                        {{ register.password.label(class="form-label") }}
+                        {% for error in register.password.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    </div>
+
+                    <div class="col-12">
+                    <div class="form-floating mb-3">
+                        {{ register.confirm_password(class="form-control", id="typePasswordY", placeholder="Konfirmasi Kata Sandi") }}
+                        {{ register.confirm_password.label(class="form-label") }}
+                        {% for error in register.confirm_password.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-7">
+                        <div class="form-check">
+                            <input class="form-check-input custom-checkbox" type="checkbox" onclick="togglePasswordVisibilityRegister()" id="check"> 
+                            <label for="check" class="form-check-label ShowPass">Lihat Password</label>
+                        </div>
+                    </div>
+                    </div>
+                    
+
+                    <div class="col-12">
+                    <div class="d-grid">
+                        {{ register.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                    </div>
+                </div>
+                </form>
+                <div class="row">
+                <div class="col-12">
+                    <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end mt-4">
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-12">
+                    <div class="d-flex mb-3 mt-4">
+                        <hr class="my-auto flex-grow-1">
+                        <div class="px-3">Atau masuk dengan</div>
+                        <hr class="my-auto flex-grow-1">
+                    </div>
+                    <div class="d-flex gap-3 flex-column flex-md-row justify-content-center">
+                        <a href="{{ url_for('login_google') }}" class="btn btn-lg btn-outline-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                            <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
+                        </svg>
+                        <span class="ms-2 fs-6">Google</span>
+                        </a>
+                        </a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='scripts/authentication.js') }}"></script>
+
+{% endblock %}

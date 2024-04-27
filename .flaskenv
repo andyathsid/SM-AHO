@@ -1,0 +1,1 @@
+FLASKA_APP=sm_aho.py
