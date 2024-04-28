@@ -1,5 +1,8 @@
 {
     "files.exclude": {
         "**/.git": false
-    }
+    },
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.sm_ahoenv\\Scripts\\python.exe"
 }
