@@ -191,7 +191,7 @@ def stream_handler(message):
 def dashboard():
     if session.get("is_logged_in", False):
         global stream
-        stream = db.child("mesin").stream(stream_handler)
+        stream = db.child("mesin").child("tanggal").stream(stream_handler)
         return render_template("dashboard.html", title='Dashboard', email=session["email"], name=session["name"])
     else:
         return redirect(url_for('login'))
