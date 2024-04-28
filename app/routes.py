@@ -171,7 +171,7 @@ def stream_handler(message):
 
     if message["path"] == "/":
         data = message["data"]
-        socket.emit('stream_update', data)
+        socket.emit('initial_data', data)
     else:
         path_parts = message["path"].split("/")[1:]
         current_data = data
@@ -198,4 +198,3 @@ def dashboard():
     
 if __name__ == '__main__':
     socket.run(app)
-
