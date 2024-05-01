@@ -152,7 +152,7 @@ def logout():
     global stream
     try:
         if "uid" in session:
-            db.child("users").child(session["uid"]).update({"last_logged_out": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")})
+            db.child("users").child(session["uid"]).update({"last_logged_out": datetime.now().strftime("%d-%m-%y")})
         if stream:
             stream.close()
         session["is_logged_in"] = False
@@ -164,14 +164,28 @@ def logout():
         
     return redirect(url_for('login'))
 
-data = {}
+stream_1 = "pertama"
+stream_2 = "kedua"
 
 def stream_handler(message):
     global data
 
     if message["path"] == "/":
-        data = message["data"]
-        socket.emit('initial_data', data)
+        date = f"{datetime.now().strftime('%d-%m-%Y')}"
+        if message["stream_id"] == stream_1:
+            data = {date: { 
+                'shift1': message["data"]
+                }
+            }
+            print(data)
+            socket.emit('stream_update_shift1', data)
+        if message["stream_id"] == stream_2:
+            data = {date: { 
+                'shift2': message["data"]
+                }
+            }
+            print(data)
+            socket.emit('stream_update_shift2', data)
     else:
         path_parts = message["path"].split("/")[1:]
         current_data = data
@@ -185,13 +199,24 @@ def stream_handler(message):
         key = path_parts[-1]
         current_data[key] = message["data"]
 
-        socket.emit('stream_update', data)
+        if message["stream_id"] == stream_1:
+            socket.emit('stream_update_shift1', data)
+        else:
+            socket.emit('stream_update_shift2', data)
         
 @app.route('/dashboard')
 def dashboard():
     if session.get("is_logged_in", False):
-        global stream
-        stream = db.child("mesin").child("tanggal").stream(stream_handler)
+        global stream1
+        date = datetime.now().strftime("%d-%m-%Y")
+        
+        for shift in ["shift1", "shift2"]:
+            shift_ref = db.child("mesin").child(date).child(shift)
+            shift_ref.update({"status": "aktif"})
+
+        stream1 = db.child("mesin").child(date).child("shift1").stream(stream_handler, stream_id=stream_1)
+        stream1 = db.child("mesin").child(date).child("shift2").stream(stream_handler, stream_id=stream_2)
+
         return render_template("dashboard.html", title='Dashboard', email=session["email"], name=session["name"])
     else:
         return redirect(url_for('login'))
