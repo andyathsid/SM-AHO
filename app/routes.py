@@ -207,15 +207,15 @@ def stream_handler(message):
 @app.route('/dashboard')
 def dashboard():
     if session.get("is_logged_in", False):
-        global stream1
+        global stream
         date = datetime.now().strftime("%d-%m-%Y")
         
         for shift in ["shift1", "shift2"]:
             shift_ref = db.child("mesin").child(date).child(shift)
             shift_ref.update({"status": "aktif"})
 
-        stream1 = db.child("mesin").child(date).child("shift1").stream(stream_handler, stream_id=stream_1)
-        stream1 = db.child("mesin").child(date).child("shift2").stream(stream_handler, stream_id=stream_2)
+        stream = db.child("mesin").child(date).child("shift1").stream(stream_handler, stream_id=stream_1)
+        stream = db.child("mesin").child(date).child("shift2").stream(stream_handler, stream_id=stream_2)
 
         return render_template("dashboard.html", title='Dashboard', email=session["email"], name=session["name"])
     else:
