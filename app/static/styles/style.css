@@ -14858,7 +14858,9 @@ html, body {
   border-radius: 0.375rem !important;
 }
 
-.sb-topnav {
+select.form-control{
+  display: inline;
+  width: 200px;
+  margin-left: 25px;
 }
-
 
