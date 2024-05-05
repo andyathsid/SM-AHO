@@ -1,60 +1,96 @@
-$(document).ready(function() {
-    const table = $('#example').DataTable({
-        ajax: {
-            url: 'https://sm-aho-f408a-default-rtdb.asia-southeast1.firebasedatabase.app/mesin.json',
-            dataSrc: function(data) {
-                let result = [];
-                for (let date in data) {
-                    for (let shift in data[date]) {
-                        let shiftData = data[date][shift];
-                        let shiftName = shift === 'shift1' ? 'pertama' : 'kedua';
-                        result.push({
-                            'Tanggal': date,
-                            'Shift': shiftName,
-                            'Id Mesin': shiftData['id_mesin'],
-                            'Status': 'aktif',
-                            'Produksi': shiftData['produksi']
-                        });
-                    }
-                }
-                return result;
-            }
-        },
-        columns: [
-            { data: 'Tanggal' },
-            { data: 'Shift' },
-            { data: 'Id Mesin' },
-            { data: 'Status' },
-            { data: 'Produksi'}
-        ],
-        createdRow: function(row, data, dataIndex) {
-            var uniqueId = data['Tanggal'] + '-' + data['Shift'] + '-' + data['Id Mesin'];
-            row.id = uniqueId;
-        },
-        initComplete: function (settings, json) {
-            updateDataWebsocket(table);
-        }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  child,
+  onValue,
+  get,
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDBX7zLkMwAfYtrr0AomEJqjdn8Ol1BAWs",
+  authDomain: "sm-aho-f408a.firebaseapp.com",
+  databaseURL: "https://sm-aho-f408a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sm-aho-f408a",
+  storageBucket: "sm-aho-f408a.appspot.com",
+  messagingSenderId: "41013147936",
+  appId: "1:41013147936:web:418cbfe1395b9aa4a77f45",
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const productionRef = ref(database, "mesin");
+
+$(document).ready(function () {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "Mei",
+    "Juni",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Kamis",
+    "Friday",
+    "Sabtu",
+  ];
+
+  onValue(productionRef, (snapshot) => {
+    const data = [];
+    snapshot.forEach((dateSnapshot) => {
+      const date = dateSnapshot.key;
+      const [day, month, year] = date.split("-");
+      const monthName = monthNames[parseInt(month) - 1];
+      const dateObj = new Date(`${year}-${month}-${day}`);
+      const dayName = dayNames[dateObj.getDay()];
+      Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
+        const shiftName = shift === "shift1" ? "pertama" : "kedua";
+        Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
+          const produksi = statusData.produksi;
+          data.push([
+            date,
+            dayName,
+            monthName,
+            year,
+            shiftName,
+            idPerangkat,
+            "Status",
+            produksi,
+          ]);
+        });
+      });
     });
+
+    const table = $("#example").DataTable({
+      data: data,
+      columns: [
+        { title: "Tanggal" },
+        { title: "Hari", visible: false },
+        { title: "Bulan", visible: false },
+        { title: "Tahun", visible: false },
+        { title: "Shift" },
+        { title: "ID Perangkat" },
+        { title: "Status" },
+        { title: "Produksi" },
+      ],
+      layout: {
+        top1: {
+          searchPanes: {
+            show: false,
+          },
+        },
+      },
+    });
+  });
 });
-
-function updateDataWebsocket(table){
-const socket = io.connect('http://' + document.domain + ':' + location.port);
-
-socket.on('stream_update_shift1', function(data) {
-    console.log(data.produksi);
-    uniqueId = "02-05-2024-pertama-1a"
-    let id = table.row('[id='+uniqueId+']').index();
-    table.cell({row:id, column:4}).data(data.produksi).invalidate().draw(false);
-});
-
-socket.on('stream_update_shift2', function(data) {
-    console.log(data.produksi);
-    uniqueId = "02-05-2024-kedua-1a"
-    let id = table.row('[id='+uniqueId+']').index();
-    table.cell({row:id, column:4}).data(data.produksi).invalidate().draw(false);
-});
-
-}
-
-
-

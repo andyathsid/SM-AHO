@@ -12,11 +12,9 @@ import google.auth.transport.requests
 from flask_toastr import Toastr
 from config import Config
 from flask import jsonify
-from flask_socketio import SocketIO, emit
 import json
 
 toastr = Toastr(app)
-socket = SocketIO(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = Config.OAUTHLIB_INSECURE_TRANSPORT
 
@@ -149,12 +147,9 @@ def signup():
 
 @app.route("/logout")
 def logout():
-    global stream
     try:
         if "uid" in session:
             db.child("users").child(session["uid"]).update({"last_logged_out": datetime.now().strftime("%d-%m-%y")})
-        if stream:
-            stream.close()
         session["is_logged_in"] = False
         session.pop("email", None)
         session.pop("name", None)
@@ -163,63 +158,11 @@ def logout():
         flash(f"Terjadi kesalahan saat logout: {e}", "error")
         
     return redirect(url_for('login'))
-
-stream_1 = "pertama"
-stream_2 = "kedua"
-
-def stream_handler(message):
-    global data
-
-    if message["path"] == "/":
-        date = f"{datetime.now().strftime('%d-%m-%Y')}"
-        if message["stream_id"] == stream_1:
-            data = {date: { 
-                'shift1': message["data"]
-                }
-            }
-            print(data)
-            socket.emit('stream_update_shift1', data)
-        if message["stream_id"] == stream_2:
-            data = {date: { 
-                'shift2': message["data"]
-                }
-            }
-            print(data)
-            socket.emit('stream_update_shift2', data)
-    else:
-        path_parts = message["path"].split("/")[1:]
-        current_data = data
-
-        for part in path_parts[:-1]:
-            if part in current_data:
-                current_data = current_data[part]
-            else:
-                return
-
-        key = path_parts[-1]
-        current_data[key] = message["data"]
-
-        if message["stream_id"] == stream_1:
-            socket.emit('stream_update_shift1', data)
-        else:
-            socket.emit('stream_update_shift2', data)
-        
+                
 @app.route('/dashboard')
 def dashboard():
     if session.get("is_logged_in", False):
-        global stream
-        date = datetime.now().strftime("%d-%m-%Y")
-        
-        for shift in ["shift1", "shift2"]:
-            shift_ref = db.child("mesin").child(date).child(shift)
-            shift_ref.update({"status": "aktif"})
-
-        stream = db.child("mesin").child(date).child("shift1").stream(stream_handler, stream_id=stream_1)
-        stream = db.child("mesin").child(date).child("shift2").stream(stream_handler, stream_id=stream_2)
-
         return render_template("dashboard.html", title='Dashboard', email=session["email"], name=session["name"])
     else:
         return redirect(url_for('login'))
-    
-if __name__ == '__main__':
-    socket.run(app)
+
