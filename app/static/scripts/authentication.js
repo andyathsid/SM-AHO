@@ -1,61 +1,53 @@
-function togglePasswordVisibilityLogin() {
-    var checkbox  = document.getElementById('check');
-    var passwordInput = document.getElementById("password");
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-    } else {
-        passwordInput.type = "password";
-    }
-}
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("#registrationForm");
+  const signupPasswordField = form.querySelector("#signup-password");
+  const confirmPasswordField = form.querySelector("#signup-confirm-password");
 
-function togglePasswordVisibilityRegister() {
-    var checkbox  = document.getElementById('check');
-    var x = document.getElementById('typePasswordX');
-    var y = document.getElementById('typePasswordY');
-    if (x.type === "password") {
-        x.type = "text";
-        y.type = "text";
-    } else {
-        x.type = "password";
-        y.type = "password";
-    }
-}
-
-window.addEventListener("load", function(){
-var checkbox  = document.getElementById('{{ register.show_password.id }}');
-
-checkbox.addEventListener('change', function() {
-    if(this.checked) {
-        x.type = 'text'; 
-        y.type = 'text'; 
-    } else {
-        x.type = 'password'; 
-        y.type = 'password'; 
-    }
-});
-});
-const form = document.getElementById('registrationForm');
-const passwordField = form.querySelector('#typePasswordX');
-const confirmPasswordField = form.querySelector('#typePasswordY');
-
-function validatePasswords() {
-    const password = passwordField.value;
+  function validatePasswords() {
+    const password = signupPasswordField.value;
     const confirmPassword = confirmPasswordField.value;
-
     if (password !== confirmPassword) {
-        confirmPasswordField.setCustomValidity("Password tidak sama");
+      confirmPasswordField.setCustomValidity("Password tidak sama");
     } else {
-        confirmPasswordField.setCustomValidity("");
+      confirmPasswordField.setCustomValidity("");
     }
-}
+  }
 
-passwordField.addEventListener('input', validatePasswords);
-confirmPasswordField.addEventListener('input', validatePasswords);
+  signupPasswordField.addEventListener("input", validatePasswords);
+  confirmPasswordField.addEventListener("input", validatePasswords);
 
-form.addEventListener('submit', (event) => {
-    if (passwordField.value !== confirmPasswordField.value) {
-        event.preventDefault(); 
-        alert("Password tidak sama. Tolong periksa kembali.");
+  form.addEventListener("submit", (event) => {
+    if (signupPasswordField.value !== confirmPasswordField.value) {
+      event.preventDefault();
+      alert("Password tidak sama. Tolong periksa kembali.");
     }
+  });
+
+  const showSignupPasswordCheckbox = document.querySelector(
+    "#signup-show-password"
+  );
+  showSignupPasswordCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+      signupPasswordField.type = "text";
+      confirmPasswordField.type = "text";
+    } else {
+      signupPasswordField.type = "password";
+      confirmPasswordField.type = "password";
+    }
+  });
+
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+  const showLoginPasswordCheckbox = document.querySelector("#login-show-password");
+  const loginPasswordField = document.querySelector("#login-password");
+
+  showLoginPasswordCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+      loginPasswordField.type = "text";
+    } else {
+      loginPasswordField.type = "password";
+    }
+    console.log("Event listener fired!");
+  });
+});
