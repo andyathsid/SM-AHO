@@ -1,5 +1,4 @@
-window.addEventListener('DOMContentLoaded', event => {
-
+$(document).ready(function() {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', event => {
@@ -10,3 +9,4 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
