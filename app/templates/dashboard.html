@@ -187,32 +187,54 @@
           <div class="col-xl-6">
             <div class="card mb-4">
               <div class="card-header">
-                <i class="fas fa-chart-area me-1"></i
-                ><span> Area Chart Example </span>
+                <div class="row">
+                  <div class="col" style="margin: 2px 0px 4px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;"><i class="fas fa-chart-area me-1"></i><span> Laporan Bagan Area Produksi Periodik </span></div>
+                  <div class="col">
+                      <div class="text-end" style="margin-bottom: 0px;margin-top: 0px;">
+                        <select id="area-report-select" class="bg-transparent" style="border-color: #00000000;padding-top: 0px;margin-top: 0px;">
+                              <option value="area-yearly">Tahunan</option>
+                              <option value="area-monthly">Bulanan</option>
+                              <option value="area-weekly">Mingguan</option>
+                              <option value="area-daily">Harian</option>
+                          </select>
+                        </div>
+                  </div>
+              </div>
               </div>
               <div class="card-body">
-                <canvas id="myAreaChart" width="100%" height="40"></canvas>
+                <div id="area-chart" style="width:100%; height:300px;"></div>
               </div>
             </div>
           </div>
           <div class="col-xl-6">
             <div class="card mb-4">
-              <div class="card-header">
-                <i class="fas fa-chart-bar me-1"></i
-                ><span> Bar Chart Example </span>
-              </div>
+              <div class="card-header" style="margin-bottom: 0px;padding-top: 8px;padding-bottom: 8px;">
+                <div class="row">
+                    <div class="col" style="margin: 2px 0px 4px;margin-bottom: 0px;padding-top: 0px;margin-top: 0px;"><i class="fas fa-chart-bar me-1"></i><span> Laporan Bagan Batang Produksi Periodik </span></div>
+                    <div class="col">
+                        <div class="text-end" style="margin-bottom: 0px;margin-top: 0px;">
+                          <select id="bar-report-select" class="bg-transparent" style="border-color: #00000000;padding-top: 0px;margin-top: 0px;">
+                                <option value="bar-yearly">Tahunan</option>
+                                <option value="bar-monthly">Bulanan</option>
+                                <option value="bar-weekly">Mingguan</option>
+                                <option value="bar-daily">Harian</option>
+                            </select>
+                          </div>
+                    </div>
+                </div>
+            </div>
               <div class="card-body">
-                <canvas id="myBarChart" width="100%" height="40"></canvas>
+                  <div id="bar-chart" style="width:100%; height:300px;"></div>
               </div>
             </div>
           </div>
         </div>
         <div class="card mb-4">
           <div class="card-header">
-            <i class="fas fa-table me-1"></i><span> DataTable Example </span>
+            <i class="fas fa-table me-1"></i><span> Tabel Laporan Produksi </span>
           </div>
           <div class="card-body">
-            <table id="example" class="table table-striped" style="width: 100%">
+            <table id="example" class="table table-striped table-hover table-responsive" style="width: 100%">
               <thead>
                 <tr>
                   <th>Tanggal</th>
