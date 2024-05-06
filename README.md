@@ -8,3 +8,4 @@
 - [ ] Add an update operation for the ‘status’ column.
 - [x] Add real-time graph report
 - [ ] Add documents generation feature
+- [ ] Deploy to GCP
