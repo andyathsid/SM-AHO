@@ -14864,3 +14864,11 @@ select.form-control{
   margin-left: 25px;
 }
 
+.table td {
+  text-align: center !important;
+} 
+
+.table th {
+  text-align: center  !important;
+}
+

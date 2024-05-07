@@ -17,11 +17,10 @@ const productionRef = ref(database, "mesin");
 
 $(document).ready(function() {
   const monthNames = [
-    "January", "February", "March", "April", "Mei", "Juni",
-    "July", "August", "September", "October", "November", "December",
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
   ];
   const dayNames = [
-    "Sunday", "Monday", "Tuesday", "Wednesday", "Kamis", "Friday", "Sabtu",
+    "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
   ];
 
   let currentChart;
@@ -50,9 +49,9 @@ $(document).ready(function() {
       data: data,
       columns: [
         { title: "Tanggal" },
-        { title: "Hari" },
-        { title: "Bulan" },
-        { title: "Tahun" },
+        { title: "Hari", visible: false },
+        { title: "Bulan", visible: false },
+        { title: "Tahun", visible: false },
         { title: "Shift" },
         { title: "ID Perangkat" },
         { title: "Status" },
