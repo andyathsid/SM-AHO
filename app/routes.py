@@ -10,26 +10,7 @@ from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
 from flask_toastr import Toastr
-from config import Config
-from flask import jsonify
-import json
-
-toastr = Toastr(app)
-
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = Config.OAUTHLIB_INSECURE_TRANSPORT
-
-GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
-REDIRECT_URI = os.environ.get('REDIRECT_URI')
-
-flow = Flow.from_client_secrets_file(
-    client_secrets_file=Config.CLIENT_SECRETS_FILE,
-    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri=REDIRECT_URI,
-)
-
-fb = pyrebase.initialize_app(Config.FIREBASE_CONFIG)
-auth = fb.auth()
-db = fb.database()
+from app import app, toastr, auth, db, flow, GOOGLE_CLIENT_ID
 
 def login_is_required(function):
     def wrapper(*args, **kwargs):
