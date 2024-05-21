@@ -8,5 +8,5 @@
 - [x] Add an update operation for the Firebase RTDB's status node value via DataTable's status cell.
 - [x] Add real-time graph report.
 - [x] Add documents generation feature.
-- [ ] Find DataTable's Editor alternatives.
+- [x] Find DataTable's Editor alternatives.
 - [ ] Deploy to GCP.
