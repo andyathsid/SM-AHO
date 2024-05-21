@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getDatabase, ref, child, onValue, get, } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+import { getDatabase, ref, child, onValue, get, set} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBX7zLkMwAfYtrr0AomEJqjdn8Ol1BAWs",
@@ -17,14 +17,17 @@ const productionRef = ref(database, "mesin");
 
 $(document).ready(function() {
   const monthNames = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    "January", "February", "March", "April", "Mei", "Juni",
+    "July", "August", "September", "October", "November", "December",
   ];
   const dayNames = [
-    "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Kamis", "Friday", "Sabtu",
   ];
 
   let currentChart;
   let currentAreaChart;
+
+  let table;
 
   onValue(productionRef, (snapshot) => {
     const data = [];
@@ -38,53 +41,132 @@ $(document).ready(function() {
         const shiftName = shift === "shift1" ? "pertama" : "kedua";
         Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
           const produksi = statusData.produksi;
+          const status = statusData.status;
+          const rowId = `${date}|${shift}|${idPerangkat}`;
           data.push([
-            date, dayName, monthName, year, shiftName, idPerangkat, "aktif", produksi,
+            date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
           ]);
         });
       });
     });
 
-    const table = $("#example").DataTable({
-      data: data,
-      columns: [
-        { title: "Tanggal" },
-        { title: "Hari", visible: false },
-        { title: "Bulan", visible: false },
-        { title: "Tahun", visible: false },
-        { title: "Shift" },
-        { title: "ID Perangkat" },
-        { title: "Status" },
-        { title: "Produksi" },
-      ],
-      layout: {
-        top1: {
-          searchPanes: { initCollapsed: true },
+    const statusOptions = [
+      { value: "aktif", label: "aktif" },
+      { value: "tidak aktif", label: "tidak aktif" },
+    ];
+    
+    let editor = new DataTable.Editor({
+      fields: [
+        {
+          label: "Status:",
+          name: "status",
+          type: "select",
+          options: statusOptions,
         },
-      },
+      ],
+      table: "#datatable",
+      idSrc: 8
     });
 
+    if (!table) {
+      table = $("#datatable").DataTable({
+        data: data,
+        columns: [
+          { title: "Tanggal" },
+          { title: "Hari" },
+          { title: "Bulan" },
+          { title: "Tahun" },
+          { title: "Shift" },
+          { title: "ID Perangkat" },
+          {
+            editField: "status",
+            className: "editable",
+            title: "Status",
+            render: function (data, type, row) {
+              return (
+                data + '    <span class="dropdown"><i class="bi bi-chevron-down"></i></span>' 
+              );
+            },
+          },
+          { title: "Produksi" },
+          { title: "ID Baris" },
+        ],
+        columnDefs: [
+          { targets: [1, 2, 3, 8], visible: false },
+        ],
+        processing: true,
+        layout: {
+          topStart: {
+            buttons:  ['excel', 'pdf', 'print']
+        },
+          top1: {
+            searchPanes: { initCollapsed: true },
+          },
+        },
+        createdRow: function (row, data, dataIndex) {
+          $(row).attr("id", data[8]);
+        },
+      });
+    } else {
+      table.clear();
+      table.rows.add(data).draw();
+    }
+    setupEditableCellListener(table, editor);
+    updateCharts(table);
+});
+
+function setupEditableCellListener(table, editor) {
+  table.on("click", "tbody td.editable", function (e) {
+    const row = table.row($(this).closest('tr'));
+    const rowData = row.data();
+    const rowId = rowData[8]; 
+
+    const selectField = editor.field('status');
+    selectField.input().on('change', function() {
+        const selectedValue = $(this).val();
+
+        const [date, shift, idPerangkat] = rowId.split('|');
+
+        const statusRef = ref(database, `mesin/${date}/${shift}/${idPerangkat}/status`);
+
+        set(statusRef, selectedValue)
+            .then(() => {
+                console.log('Status updated successfully');
+            })
+            .catch((error) => {
+                console.error('Error updating status:', error);
+            });
+
+    });
+
+    editor.inline(this, {
+      onBlur: "submit",
+    });
+  });
+}
+
+
+  function updateCharts(table) {
     const yearlyProduction = getYearlyProduction(table);
     const monthlyProductionData = getMonthlyProductionForYear(table);
-    const weeklyProductionData= getWeeklyProductionForMonthYear(table);
+    const weeklyProductionData = getWeeklyProductionForMonthYear(table);
     const dailyProductionData = getDailyProductionForMonthYear(table);
 
-    $('#bar-report-select').on('change', function() {
+    updateChart('bar-yearly', yearlyProduction);
+    updateAreaChart('area-yearly', yearlyProduction);
+
+    $('#bar-report-select').off('change').on('change', function() {
       const selectedOption = $(this).val();
       updateChart(selectedOption, yearlyProduction, monthlyProductionData, weeklyProductionData, dailyProductionData);
     });
 
-    $('#area-report-select').on('change', function() {
+    $('#area-report-select').off('change').on('change', function() {
       const selectedOption = $(this).val();
       updateAreaChart(selectedOption, yearlyProduction, monthlyProductionData, weeklyProductionData, dailyProductionData);
     });
-    
-    
+  }
 
 
-    updateChart('bar-yearly', yearlyProduction);
-    updateAreaChart('area-yearly', yearlyProduction);
-  });
 
   function updateChart(option, yearlyData, monthlyData, weeklyData, dailyData) {
     if (currentChart) {
