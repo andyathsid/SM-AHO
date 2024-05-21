@@ -1,1 +1,2 @@
 FLASKA_APP=sm_aho.py
+FLASK_DEBUG=1
