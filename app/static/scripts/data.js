@@ -29,6 +29,35 @@ $(document).ready(function() {
 
   let table;
 
+  let rowId;
+
+  get(productionRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      snapshot.forEach((dateSnapshot) => {
+        const date = dateSnapshot.key;
+        const [day, month, year] = date.split("-");
+        const monthName = monthNames[parseInt(month) - 1];
+        const dateObj = new Date(`${year}-${month}-${day}`);
+        const dayName = dayNames[dateObj.getDay()];
+        Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
+          const shiftName = shift === "shift1" ? "pertama" : "kedua";
+          Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
+            const idPerangkatRef = child(productionRef, `${date}/${shift}/${idPerangkat}`);
+            get(child(idPerangkatRef, "status")).then((statusSnapshot) => {
+              if (!statusSnapshot.exists()) {
+                set(child(idPerangkatRef, "status"), "aktif");
+              }
+            });
+          });
+        });
+      });
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+
   onValue(productionRef, (snapshot) => {
     const data = [];
     snapshot.forEach((dateSnapshot) => {
@@ -42,7 +71,7 @@ $(document).ready(function() {
         Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
           const produksi = statusData.produksi;
           const status = statusData.status;
-          const rowId = `${date}|${shift}|${idPerangkat}`;
+          rowId = `${date}|${shift}|${idPerangkat}`;
           data.push([
             date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
           ]);
@@ -50,26 +79,9 @@ $(document).ready(function() {
       });
     });
 
-    const statusOptions = [
-      { value: "aktif", label: "aktif" },
-      { value: "tidak aktif", label: "tidak aktif" },
-    ];
-    
-    let editor = new DataTable.Editor({
-      fields: [
-        {
-          label: "Status:",
-          name: "status",
-          type: "select",
-          options: statusOptions,
-        },
-      ],
-      table: "#datatable",
-      idSrc: 8
-    });
-
     if (!table) {
       table = $("#datatable").DataTable({
+        processing: true,
         data: data,
         columns: [
           { title: "Tanggal" },
@@ -79,8 +91,6 @@ $(document).ready(function() {
           { title: "Shift" },
           { title: "ID Perangkat" },
           {
-            editField: "status",
-            className: "editable",
             title: "Status",
             render: function (data, type, row) {
               return (
@@ -94,7 +104,7 @@ $(document).ready(function() {
         columnDefs: [
           { targets: [1, 2, 3, 8], visible: false },
         ],
-        processing: true,
+
         layout: {
           topStart: {
             buttons:  ['excel', 'pdf', 'print']
@@ -111,40 +121,48 @@ $(document).ready(function() {
       table.clear();
       table.rows.add(data).draw();
     }
-    setupEditableCellListener(table, editor);
+
+    table.MakeCellsEditable({
+      "onUpdate": myCallbackFunction,
+      "inputCss":'my-input-class',
+      "columns": [6],
+      "confirmationButton": { 
+        "confirmCss": 'my-confirm-class',
+        "cancelCss": 'my-cancel-class'
+      },
+      "inputTypes":[{
+        "column":6,
+        "type":"list",
+        "options":[
+          { "value": "aktif", "display": "Aktif" },
+          { "value": "tidak aktif", "display": "Tidak Aktif" }
+      ]
+      }]
+    });
+
     updateCharts(table);
 });
 
-function setupEditableCellListener(table, editor) {
-  table.on("click", "tbody td.editable", function (e) {
-    const row = table.row($(this).closest('tr'));
-    const rowData = row.data();
-    const rowId = rowData[8]; 
 
-    const selectField = editor.field('status');
-    selectField.input().on('change', function() {
-        const selectedValue = $(this).val();
+function myCallbackFunction(updatedCell, updatedRow, oldValue, attempt = 1) {
+  let selectedValue = updatedCell.data();
 
-        const [date, shift, idPerangkat] = rowId.split('|');
+  
+  if (selectedValue === oldValue) {
+   
+    selectedValue = oldValue === "aktif" ? "tidak aktif" : "aktif";
+    updatedCell.data(selectedValue);
+    
+    if (attempt < 3) {
+      myCallbackFunction(updatedCell, updatedRow, oldValue, attempt + 1);
+      return;
+    }
+  }
 
-        const statusRef = ref(database, `mesin/${date}/${shift}/${idPerangkat}/status`);
-
-        set(statusRef, selectedValue)
-            .then(() => {
-                console.log('Status updated successfully');
-            })
-            .catch((error) => {
-                console.error('Error updating status:', error);
-            });
-
-    });
-
-    editor.inline(this, {
-      onBlur: "submit",
-    });
-  });
+  const [date, shift, idPerangkat] = updatedRow.data()[8].split('|');
+  const statusRef = ref(database, `mesin/${date}/${shift}/${idPerangkat}/status`);
+  set(statusRef, selectedValue)
 }
-
 
   function updateCharts(table) {
     const yearlyProduction = getYearlyProduction(table);
