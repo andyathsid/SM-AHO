@@ -46,7 +46,10 @@
                     type="module"></script>       
             <script src="{{ url_for('static', filename='scripts/usersmanagement.js') }}"
                     defer
-                    type="module"></script>                 
+                    type="module"></script>   
+            <script src="{{ url_for('static', filename='scripts/resetpassword.js') }}"
+                    defer
+                    type="module"></script>                      
             {{ toastr.include_jquery() }}
             {{ toastr.include_toastr_css() }}
             {{ toastr.message() }}

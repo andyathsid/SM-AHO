@@ -253,7 +253,9 @@ def usersmanagementdelete(user_id):
         flash(f"Terjadi kesalahan saat menghapus data: {e}", "error")
         return redirect(url_for('usersmanagement'))
 
-
+@app.route('/resetpassword')
+def resetpassword():
+    return render_template('resetpassword.html')
 
 
 
