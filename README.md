@@ -1,7 +1,7 @@
 # WIP
 ## Current To-Do List
 - [ ] Add email verification and password reset features.
-- [ ] Implement proper session management.
+- [X] Implement proper session management.
 - [ ] Implement a proper secret key for CSRF protection.
 - [X] Compare client-side and server-side real-time updates performance (front-end is actually better).
 - [X] Add inline editing feature to datatable.
