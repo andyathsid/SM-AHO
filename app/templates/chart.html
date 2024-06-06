@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+
+<div class="container-fluid px-4" >
+<h1 class="mt-4" style="margin-bottom: 20px">Bagan</h1>
+<main>
+<div class="row">
+    <div class="col-xl-12">
+      <div class="card mb-4">
+        <div class="card-header">
+          <div class="row">
+            <div class="col"
+                 style="margin: 2px 0px 4px;
+                        margin-bottom: 0px;
+                        padding-top: 0px;
+                        margin-top: 0px">
+              <i class="fas fa-chart-area me-1"></i><span>Laporan Bagan Area Produksi Periodik</span>
+            </div>
+            <div class="col">
+              <div class="text-end" style="margin-bottom: 0px;margin-top: 0px;">
+                <select id="area-report-select"
+                        class="bg-transparent"
+                        style="border-color: #00000000;
+                               padding-top: 0px;
+                               margin-top: 0px">
+                  <option value="area-yearly">Tahunan</option>
+                  <option value="area-monthly">Bulanan</option>
+                  <option value="area-weekly">Mingguan</option>
+                  <option value="area-daily">Harian</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="area-chart" style="width:100%; height:325px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card mb-4">
+        <div class="card-header"
+             style="margin-bottom: 0px;
+                    padding-top: 8px;
+                    padding-bottom: 8px">
+          <div class="row">
+            <div class="col"
+                 style="margin: 2px 0px 4px;
+                        margin-bottom: 0px;
+                        padding-top: 0px;
+                        margin-top: 0px">
+              <i class="fas fa-chart-bar me-1"></i><span>Laporan Bagan Batang Produksi Periodik</span>
+            </div>
+            <div class="col">
+              <div class="text-end" style="margin-bottom: 0px;margin-top: 0px;">
+                <select id="bar-report-select"
+                        class="bg-transparent"
+                        style="border-color: #00000000;
+                               padding-top: 0px;
+                               margin-top: 0px">
+                  <option value="bar-yearly">Tahunan</option>
+                  <option value="bar-monthly">Bulanan</option>
+                  <option value="bar-weekly">Mingguan</option>
+                  <option value="bar-daily">Harian</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="bar-chart" style="width:100%; height:300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+{% endblock %}

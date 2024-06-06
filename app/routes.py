@@ -146,4 +146,19 @@ def dashboard():
         return render_template("dashboard.html", title='Dashboard', email=session["email"], name=session["name"])
     else:
         return redirect(url_for('login'))
+    
+@app.route('/chart')
+def chart():
+    if session.get("is_logged_in", False):
+        return render_template("chart.html", title='chart', email=session["email"], name=session["name"])
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/table')
+def table():
+    if session.get("is_logged_in", False):
+        return render_template("table.html", title='chart', email=session["email"], name=session["name"])
+    else:
+        return redirect(url_for('login'))
+
 

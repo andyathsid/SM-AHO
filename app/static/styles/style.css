@@ -14900,3 +14900,11 @@ select.form-control{
   background-color: #a94442;
   text-decoration: none;
 }
+
+.icon-text {
+  display: flex;
+  align-items: center;
+}
+.icon-text i {
+  margin-right: 10px; /* Adjust the space between icon and text */
+}

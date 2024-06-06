@@ -1,3 +1,5 @@
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getDatabase, ref, child, onValue, get, set} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
@@ -17,79 +19,46 @@ const productionRef = ref(database, "mesin");
 
 $(document).ready(function() {
 
-    const monthNames = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember",
-    ];
-    const dayNames = [
-        "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
-    ];
-
-
-  let currentChart;
-  let currentAreaChart;
+  const monthNames = [
+    "January", "February", "March", "April", "Mei", "Juni",
+    "July", "August", "September", "October", "November", "December",
+  ];
+  const dayNames = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Kamis", "Friday", "Sabtu",
+  ];
 
   let table;
 
   let rowId;
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.getMonth() + 1; 
-  const year = now.getFullYear();
-  let targetDate = `${day}-${month}-${year}`;
-  const targetDateObj = new Date(targetDate);
 
   onValue(productionRef, (snapshot) => {
     const data = [];
-    let totalAktif = 0;
-    let totalProduksi = 0;
-    const shiftProduksiCounts = {
-      shift1: 0,
-      shift2: 0
-    };
-
     snapshot.forEach((dateSnapshot) => {
       const date = dateSnapshot.key;
       const [day, month, year] = date.split("-");
-      const dateStr = `${day}-${month}-${year}`;
-      const dateObj = new Date(dateStr);
-
-      if (dateObj >= targetDateObj) {
-        const monthName = monthNames[parseInt(month) - 1];
-        const dayName = dayNames[dateObj.getDay()];
-
-        Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
-          const shiftName = shift === "shift1" ? "pertama" : "kedua";
-          Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
-            const produksi = statusData.produksi;
-            let status = statusData.status;
-            if (status == null || status === undefined) {
-              status = "aktif"; 
-              const idPerangkatRef = child(productionRef, `${date}/${shift}/${idPerangkat}`);
-              set(child(idPerangkatRef, "status"), "aktif");
-            }
-            if (status === "aktif") {
-              totalAktif++;
-            }
-            shiftProduksiCounts[shift] += produksi;
-            totalProduksi += produksi;
-            const rowId = `${date}|${shift}|${idPerangkat}`;
-            data.push([
-              date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
-            ]);
-          });
+      const monthName = monthNames[parseInt(month) - 1];
+      const dateObj = new Date(`${year}-${month}-${day}`);
+      const dayName = dayNames[dateObj.getDay()];
+      Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
+        const shiftName = shift === "shift1" ? "pertama" : "kedua";
+        Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
+          const produksi = statusData.produksi;
+          let status = statusData.status;
+          if (status == null || status === undefined) {
+            status = "aktif"; 
+            const idPerangkatRef = child(productionRef, `${date}/${shift}/${idPerangkat}`);
+            set(child(idPerangkatRef, "status"), "aktif");
+          }
+          rowId = `${date}|${shift}|${idPerangkat}`;
+          data.push([
+            date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
+          ]);
         });
-      }
+      });
     });
 
-
-    document.getElementById("total-aktif").textContent = `Total Mesin yang Aktif Hari Ini: ${totalAktif}`;
-    document.getElementById("total-produksi").textContent = `Total Produksi Hari Ini: ${totalProduksi}`;
-    document.getElementById("produksi-shift1").textContent = `Total Produksi Shift 1: ${shiftProduksiCounts.shift1}`;
-    document.getElementById("produksi-shift2").textContent = `Total Produksi Shift 2: ${shiftProduksiCounts.shift2}`;
-
     if (!table) {
-      table = $("#datatable-daily").DataTable({
+      table = $("#datatable").DataTable({
         processing: true,
         data: data,
         columns: [
@@ -113,6 +82,15 @@ $(document).ready(function() {
         columnDefs: [
           { targets: [1, 2, 3, 8], visible: false },
         ],
+
+        layout: {
+          topStart: {
+            buttons:  ['excel', 'pdf', 'print']
+        },
+          top1: {
+            searchPanes: { initCollapsed: true },
+          },
+        },
         createdRow: function (row, data, dataIndex) {
           $(row).attr("id", data[8]);
         },
@@ -162,4 +140,9 @@ function myCallbackFunction(updatedCell, updatedRow, oldValue, attempt = 1) {
   const statusRef = ref(database, `mesin/${date}/${shift}/${idPerangkat}/status`);
   set(statusRef, selectedValue)
 }
+
 });
+
+
+
+
