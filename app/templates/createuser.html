@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block main_content %}
+
+<div class="container-fluid px-4">
+  <h1 class="mt-4" style="margin-bottom: 20px">Manajemen Pengguna</h1>
+  <main>
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-table me-1"></i><span>Tambah Pengguna</span>
+        <a href="{{ url_for('usersmanagement') }}" class="btn btn-primary float-end">Kembali</a>
+      </div>
+      <div class="card-body">
+        <form id="registrationForm" method="POST" novalidate>
+            {{ createUser.hidden_tag() }}
+            <div class="row gy-4 overflow-hidden">
+                <div class="col-12">
+                    <div class="form-floating mb-1">
+                        {{ createUser.nama_lengkap(class="form-control", id="typeNamaX", placeholder="Nama
+                        Lengkap") }}
+                        {{ createUser.nama_lengkap.label(class="form-label") }}
+                        {% for error in createUser.nama_lengkap.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-1">
+                        {{ createUser.email(class="form-control", placeholder="Email") }}
+                        {{ createUser.email.label(class="form-label") }}
+                        {% for error in createUser.email.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-1">
+                        {{ createUser.password(class="form-control", id="signup-password", placeholder="Kata
+                        Sandi") }}
+                        {{ createUser.password.label(class="form-label") }}
+                        {% for error in createUser.password.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        {{ createUser.confirm_password(class="form-control", id="signup-confirm-password",
+                        placeholder="Konfirmasi Kata Sandi") }}
+                        {{ createUser.confirm_password.label(class="form-label") }}
+                        {% for error in createUser.confirm_password.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-7">
+                        <div class="form-check">
+                            <input class="form-check-input custom-checkbox" type="checkbox"
+                                id="signup-show-password">
+                            <label for="signup-show-password" class="form-check-label ShowPass">Lihat Password</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="d-grid">
+                        {{ createUser.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}

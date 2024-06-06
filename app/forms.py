@@ -14,5 +14,11 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()], id='password')
     confirm_password = PasswordField('Konfirmasi Password', validators=[DataRequired()], id='confirm_password')
-    submit = SubmitField('Daftar')
+    submit = SubmitField('Tambah')
     show_password = BooleanField('Show password', id='check')
+
+class EditForm(FlaskForm):
+    nama_pengguna = StringField('Nama Pengguna', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()], render_kw={'readonly': True})
+    submit = SubmitField('Edit')
+
