@@ -36,7 +36,7 @@ $(document).ready(function() {
   const day = now.getDate();
   const month = now.getMonth() + 1; 
   const year = now.getFullYear();
-  let targetDate = `${day}-${month}-${year}`;
+  let targetDate = "6-6-2024";
   const targetDateObj = new Date(targetDate);
 
   onValue(productionRef, (snapshot) => {
@@ -44,44 +44,43 @@ $(document).ready(function() {
     let totalAktif = 0;
     let totalProduksi = 0;
     const shiftProduksiCounts = {
-      shift1: 0,
-      shift2: 0
+        shift1: 0,
+        shift2: 0
     };
 
     snapshot.forEach((dateSnapshot) => {
-      const date = dateSnapshot.key;
-      const [day, month, year] = date.split("-");
-      const dateStr = `${day}-${month}-${year}`;
-      const dateObj = new Date(dateStr);
+        const date = dateSnapshot.key;
+        const [day, month, year] = date.split("-");
+        const dateStr = `${day}-${month}-${year}`;
+        const dateObj = new Date(dateStr);
 
-      if (dateObj >= targetDateObj) {
-        const monthName = monthNames[parseInt(month) - 1];
-        const dayName = dayNames[dateObj.getDay()];
+        if (dateObj.getTime() === targetDateObj.getTime()) {
+            const monthName = monthNames[parseInt(month) - 1];
+            const dayName = dayNames[dateObj.getDay()];
 
-        Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
-          const shiftName = shift === "shift1" ? "pertama" : "kedua";
-          Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
-            const produksi = statusData.produksi;
-            let status = statusData.status;
-            if (status == null || status === undefined) {
-              status = "aktif"; 
-              const idPerangkatRef = child(productionRef, `${date}/${shift}/${idPerangkat}`);
-              set(child(idPerangkatRef, "status"), "aktif");
-            }
-            if (status === "aktif") {
-              totalAktif++;
-            }
-            shiftProduksiCounts[shift] += produksi;
-            totalProduksi += produksi;
-            const rowId = `${date}|${shift}|${idPerangkat}`;
-            data.push([
-              date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
-            ]);
-          });
-        });
-      }
+            Object.entries(dateSnapshot.val()).forEach(([shift, shiftData]) => {
+                const shiftName = shift === "shift1" ? "pertama" : "kedua";
+                Object.entries(shiftData).forEach(([idPerangkat, statusData]) => {
+                    const produksi = statusData.produksi;
+                    let status = statusData.status;
+                    if (status == null || status === undefined) {
+                        status = "aktif"; 
+                        const idPerangkatRef = child(productionRef, `${date}/${shift}/${idPerangkat}`);
+                        set(child(idPerangkatRef, "status"), "aktif");
+                    }
+                    if (status === "aktif") {
+                        totalAktif++;
+                    }
+                    shiftProduksiCounts[shift] += produksi;
+                    totalProduksi += produksi;
+                    const rowId = `${date}|${shift}|${idPerangkat}`;
+                    data.push([
+                        date, dayName, monthName, year, shiftName, idPerangkat, status, produksi, rowId,
+                    ]);
+                });
+            });
+        }
     });
-
 
     document.getElementById("total-aktif").textContent = `Total Mesin yang Aktif Hari Ini: ${totalAktif}`;
     document.getElementById("total-produksi").textContent = `Total Produksi Hari Ini: ${totalProduksi}`;
@@ -113,6 +112,14 @@ $(document).ready(function() {
         columnDefs: [
           { targets: [1, 2, 3, 8], visible: false },
         ],
+        layout: {
+          topStart: {
+            buttons:  ['excel', 'pdf', 'print']
+        },
+          top1: {
+            searchPanes: { initCollapsed: true },
+          },
+        },
         createdRow: function (row, data, dataIndex) {
           $(row).attr("id", data[8]);
         },
