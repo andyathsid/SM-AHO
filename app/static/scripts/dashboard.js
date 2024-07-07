@@ -2,13 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/fireba
 import { getDatabase, ref, child, onValue, get, set} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDBX7zLkMwAfYtrr0AomEJqjdn8Ol1BAWs",
-  authDomain: "sm-aho-f408a.firebaseapp.com",
-  databaseURL: "https://sm-aho-f408a-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "sm-aho-f408a",
-  storageBucket: "sm-aho-f408a.appspot.com",
-  messagingSenderId: "41013147936",
-  appId: "1:41013147936:web:418cbfe1395b9aa4a77f45",
+  apiKey: "AIzaSyC2rjPGKsN8E7npywIvGbhOOb5YWhVaQgc",
+  authDomain: "sm-aho.firebaseapp.com",
+  databaseURL: "https://sm-aho-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sm-aho",
+  storageBucket: "sm-aho.appspot.com",
+  messagingSenderId: "514581075925",
+  appId: "1:514581075925:web:1400bb0d1eede78e21cf5c",
+  measurementId: "G-KVLPB26502"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -36,6 +37,7 @@ $(document).ready(function() {
   const day = now.getDate();
   const month = now.getMonth() + 1; 
   const year = now.getFullYear();
+  // let targetDate = `${day}-${month}-${year}`;
   let targetDate = "6-6-2024";
   const targetDateObj = new Date(targetDate);
 

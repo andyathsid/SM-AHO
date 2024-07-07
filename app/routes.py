@@ -68,6 +68,7 @@ from app import app, fb_auth, auth, db, flow, GOOGLE_CLIENT_ID
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
     if form.validate_on_submit():
         try:
             user = fb_auth.sign_in_with_email_and_password(form.email.data, form.password.data)
@@ -96,6 +97,9 @@ def login():
 
         except Exception as e:
             flash(f"Terjadi kesalahan saat login: {e}", "error")
+            return render_template('login.html', title='Sign In', form=form)
+            
+
 
     else:
         if session.get("email"):

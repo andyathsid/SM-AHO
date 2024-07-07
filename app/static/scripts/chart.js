@@ -2,13 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/fireba
 import { getDatabase, ref, child, onValue, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDBX7zLkMwAfYtrr0AomEJqjdn8Ol1BAWs",
-  authDomain: "sm-aho-f408a.firebaseapp.com",
-  databaseURL: "https://sm-aho-f408a-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "sm-aho-f408a",
-  storageBucket: "sm-aho-f408a.appspot.com",
-  messagingSenderId: "41013147936",
-  appId: "1:41013147936:web:418cbfe1395b9aa4a77f45",
+  apiKey: "AIzaSyC2rjPGKsN8E7npywIvGbhOOb5YWhVaQgc",
+  authDomain: "sm-aho.firebaseapp.com",
+  databaseURL: "https://sm-aho-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sm-aho",
+  storageBucket: "sm-aho.appspot.com",
+  messagingSenderId: "514581075925",
+  appId: "1:514581075925:web:1400bb0d1eede78e21cf5c",
+  measurementId: "G-KVLPB26502"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -105,7 +106,7 @@ $(document).ready(function() {
           name: year,
           y: production,
         }));
-        chartTitle = 'Yearly Production Report';
+        chartTitle = 'Laporan Produksi Tahun (Bagan Batang)';
         break;
       case 'bar-monthly':
         chartData = Object.entries(monthlyData).flatMap(([year, monthData]) =>
@@ -114,7 +115,7 @@ $(document).ready(function() {
             y: production,
           }))
         );
-        chartTitle = 'Monthly Production Report';
+        chartTitle = 'Laporan Produksi Bulan (Bagan Batang)';
         break;
       case 'bar-weekly':
         chartData = Object.entries(weeklyData).flatMap(([year, yearData]) =>
@@ -125,7 +126,7 @@ $(document).ready(function() {
             }))
           )
         );
-        chartTitle = 'Weekly Production Report';
+        chartTitle = 'Laporan Produksi Mingguan(Bagan Batang)';
         break;
       case 'bar-daily':
         chartData = Object.entries(dailyData).flatMap(([year, yearData]) =>
@@ -136,7 +137,7 @@ $(document).ready(function() {
             }))
           )
         );
-        chartTitle = 'Daily Production Report';
+        chartTitle = 'Laporan Produksi Harian (Bagan Batang)';
         break;
       default:
         return;
@@ -180,7 +181,7 @@ $(document).ready(function() {
           name: year,
           y: production,
         }));
-        chartTitle = 'Yearly Production Report (Area Chart)';
+        chartTitle = 'Laporan Produksi Tahuan (Bagan Area)';
         break;
       case 'area-monthly':
         chartData = Object.entries(monthlyData).flatMap(([year, monthData]) =>
@@ -189,7 +190,7 @@ $(document).ready(function() {
             y: production,
           }))
         );
-        chartTitle = 'Monthly Production Report (Area Chart)';
+        chartTitle = 'Laporan Produksi Bulanan (Bagan Area)';
         break;
       case 'area-weekly':
         chartData = Object.entries(weeklyData).flatMap(([year, yearData]) =>
@@ -200,7 +201,7 @@ $(document).ready(function() {
             }))
           )
         );
-        chartTitle = 'Weekly Production Report (Area Chart)';
+        chartTitle = 'Laporan Produksi Mingguan (Bagan Area)';
         break;
       case 'area-daily':
         chartData = Object.entries(dailyData).flatMap(([year, yearData]) =>
@@ -211,7 +212,7 @@ $(document).ready(function() {
             }))
           )
         );
-        chartTitle = 'Daily Production Report (Area Chart)';
+        chartTitle = 'Laporan Produksi Harian (Bagan Area)';
         break;
       default:
         return;
@@ -230,12 +231,12 @@ $(document).ready(function() {
       },
       yAxis: {
         title: {
-          text: 'Production',
+          text: 'Produksi',
         },
       },
       series: [
         {
-          name: 'Production',
+          name: 'Produksi',
           data: chartData,
         },
       ],
@@ -255,7 +256,7 @@ $(document).ready(function() {
       yearlyProduction[year] += numericProduction;
     });
   
-    // Filter out years with no data
+
     return Object.fromEntries(Object.entries(yearlyProduction).filter(([_, value]) => value > 0));
   }
   
@@ -276,7 +277,7 @@ $(document).ready(function() {
       monthlyProduction[year][monthName] += numericProduction;
     });
   
-    // Filter out months with no data
+
     for (const year in monthlyProduction) {
       monthlyProduction[year] = Object.fromEntries(
         Object.entries(monthlyProduction[year]).filter(([_, value]) => value > 0)
@@ -308,8 +309,7 @@ $(document).ready(function() {
   
       weeklyProduction[year][monthName][`Minggu ${weekNumber}`] += numericProduction;
     });
-  
-    // Filter out weeks with no data
+
     for (const year in weeklyProduction) {
       for (const month in weeklyProduction[year]) {
         weeklyProduction[year][month] = Object.fromEntries(
@@ -342,7 +342,6 @@ $(document).ready(function() {
       dailyProduction[year][monthName][dayName] += numericProduction;
     });
   
-    // Filter out days with no data
     for (const year in dailyProduction) {
       for (const month in dailyProduction[year]) {
         dailyProduction[year][month] = Object.fromEntries(

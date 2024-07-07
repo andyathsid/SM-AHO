@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const password = signupPasswordField.value;
     const confirmPassword = confirmPasswordField.value;
     if (password !== confirmPassword) {
-      confirmPasswordField.setCustomValidity("Password tidak sama");
+      confirmPasswordField.setCustomValidity("Password tidak sama.");
     } else {
       confirmPasswordField.setCustomValidity("");
     }
@@ -48,6 +48,5 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       loginPasswordField.type = "password";
     }
-    console.log("Event listener fired!");
   });
 });
