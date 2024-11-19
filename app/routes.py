@@ -42,11 +42,13 @@ def login():
             return redirect(url_for('dashboard'))
 
         except Exception as e:
-            flash(f"Terjadi kesalahan saat login: {e}", "error")
+            print(str(e)) 
+            error_message = str(e)
+            if "INVALID_LOGIN_CREDENTIALS" in error_message or "EMAIL_NOT_FOUND" in error_message:
+                flash("Email atau password salah. Silakan coba lagi.", "error")
+            else:
+                flash(f"Terjadi kesalahan saat login: {error_message}", "error")
             return render_template('login.html', title='Sign In', form=form)
-            
-
-
     else:
         if session.get("email"):
             form.email.data = session.get("email")
