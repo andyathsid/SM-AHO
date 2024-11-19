@@ -38,7 +38,7 @@ $(document).ready(function() {
   const month = now.getMonth() + 1; 
   const year = now.getFullYear();
   // let targetDate = `${day}-${month}-${year}`;
-  let targetDate = "6-6-2024";
+  let targetDate = "12-9-2024";
   const targetDateObj = new Date(targetDate);
 
   onValue(productionRef, (snapshot) => {

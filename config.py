@@ -11,6 +11,4 @@ class Config:
         "appId": os.environ.get('FIREBASE_APP_ID'),
     }
     OAUTHLIB_INSECURE_TRANSPORT = "1"
-    CLIENT_SECRETS_FILE = "D:/secret-configs/client_secret.json"
-    FIREBASE_ADMIN_SECRETS_FILE = "D:/secret-configs/firebase_admin_sdk_cred.json"
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'birjon'

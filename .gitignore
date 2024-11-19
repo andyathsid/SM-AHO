@@ -124,11 +124,11 @@ celerybeat.pid
 .venv
 env/
 venv/
-.sm_ahoenv/
+.sm-aho-venv/
 ENV/
 env.bak/
 venv.bak/
-.sm_ahoenv.bak/
+.sm-aho-venv.bak/
 
 # Spyder project settings
 .spyderproject
