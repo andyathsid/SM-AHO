@@ -1,11 +1,12 @@
 import requests
 from app import app
-from flask import flash, redirect, render_template, request, session, abort, url_for, make_response
+from flask import flash, redirect, render_template, render_template_string, request, session, abort, url_for, make_response
 from app.forms import LoginForm, RegisterForm, EditForm
 from datetime import datetime
 from flask_toastr import Toastr
 from flask import jsonify
 from functools import wraps
+import os
 
 from app import app, fb_auth, db
 
@@ -94,6 +95,60 @@ def logout():
         flash(f"Terjadi kesalahan saat logout: {e}", "error")
         
     return redirect(url_for('login'))
+
+@app.route('/static/scripts/chart.js')
+def chart_js():
+    with open('app/static/scripts/chart.js', 'r') as file:
+        template = file.read()
+    
+    js_content = template.replace('{{FIREBASE_API_KEY}}', os.environ.get('FIREBASE_API_KEY'))
+    js_content = js_content.replace('{{FIREBASE_AUTH_DOMAIN}}', os.environ.get('FIREBASE_AUTH_DOMAIN'))
+    js_content = js_content.replace('{{FIREBASE_DATABASE_URL}}', os.environ.get('FIREBASE_DATABASE_URL'))
+    js_content = js_content.replace('{{FIREBASE_PROJECT_ID}}', os.environ.get('FIREBASE_PROJECT_ID'))
+    js_content = js_content.replace('{{FIREBASE_STORAGE_BUCKET}}', os.environ.get('FIREBASE_STORAGE_BUCKET'))
+    js_content = js_content.replace('{{FIREBASE_MESSAGING_SENDER_ID}}', os.environ.get('FIREBASE_MESSAGING_SENDER_ID'))
+    js_content = js_content.replace('{{FIREBASE_APP_ID}}', os.environ.get('FIREBASE_APP_ID'))
+    js_content = js_content.replace('{{FIREBASE_MEASUREMENT_ID}}', os.environ.get('FIREBASE_MEASUREMENT_ID'))
+    
+    response = make_response(js_content)
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
+
+@app.route('/static/scripts/table.js')
+def table_js():
+    with open('app/static/scripts/table.js', 'r') as file:
+        template = file.read()
+    
+    js_content = template.replace('{{FIREBASE_API_KEY}}', os.environ.get('FIREBASE_API_KEY'))
+    js_content = js_content.replace('{{FIREBASE_AUTH_DOMAIN}}', os.environ.get('FIREBASE_AUTH_DOMAIN'))
+    js_content = js_content.replace('{{FIREBASE_DATABASE_URL}}', os.environ.get('FIREBASE_DATABASE_URL'))
+    js_content = js_content.replace('{{FIREBASE_PROJECT_ID}}', os.environ.get('FIREBASE_PROJECT_ID'))
+    js_content = js_content.replace('{{FIREBASE_STORAGE_BUCKET}}', os.environ.get('FIREBASE_STORAGE_BUCKET'))
+    js_content = js_content.replace('{{FIREBASE_MESSAGING_SENDER_ID}}', os.environ.get('FIREBASE_MESSAGING_SENDER_ID'))
+    js_content = js_content.replace('{{FIREBASE_APP_ID}}', os.environ.get('FIREBASE_APP_ID'))
+    js_content = js_content.replace('{{FIREBASE_MEASUREMENT_ID}}', os.environ.get('FIREBASE_MEASUREMENT_ID'))
+    
+    response = make_response(js_content)
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
+
+@app.route('/static/scripts/dashboard.js')
+def dashboard_js():
+    with open('app/static/scripts/dashboard.js', 'r') as file:
+        template = file.read()
+    
+    js_content = template.replace('{{FIREBASE_API_KEY}}', os.environ.get('FIREBASE_API_KEY'))
+    js_content = js_content.replace('{{FIREBASE_AUTH_DOMAIN}}', os.environ.get('FIREBASE_AUTH_DOMAIN'))
+    js_content = js_content.replace('{{FIREBASE_DATABASE_URL}}', os.environ.get('FIREBASE_DATABASE_URL'))
+    js_content = js_content.replace('{{FIREBASE_PROJECT_ID}}', os.environ.get('FIREBASE_PROJECT_ID'))
+    js_content = js_content.replace('{{FIREBASE_STORAGE_BUCKET}}', os.environ.get('FIREBASE_STORAGE_BUCKET'))
+    js_content = js_content.replace('{{FIREBASE_MESSAGING_SENDER_ID}}', os.environ.get('FIREBASE_MESSAGING_SENDER_ID'))
+    js_content = js_content.replace('{{FIREBASE_APP_ID}}', os.environ.get('FIREBASE_APP_ID'))
+    js_content = js_content.replace('{{FIREBASE_MEASUREMENT_ID}}', os.environ.get('FIREBASE_MEASUREMENT_ID'))
+    
+    response = make_response(js_content)
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
                 
 @app.route('/dashboard')
 def dashboard():

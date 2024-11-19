@@ -2,14 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/fireba
 import { getDatabase, ref, child, onValue, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC2rjPGKsN8E7npywIvGbhOOb5YWhVaQgc",
-  authDomain: "sm-aho.firebaseapp.com",
-  databaseURL: "https://sm-aho-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "sm-aho",
-  storageBucket: "sm-aho.appspot.com",
-  messagingSenderId: "514581075925",
-  appId: "1:514581075925:web:1400bb0d1eede78e21cf5c",
-  measurementId: "G-KVLPB26502"
+  apiKey: "{{FIREBASE_API_KEY}}",
+  authDomain: "{{FIREBASE_AUTH_DOMAIN}}",
+  databaseURL: "{{FIREBASE_DATABASE_URL}}",
+  projectId: "{{FIREBASE_PROJECT_ID}}",
+  storageBucket: "{{FIREBASE_STORAGE_BUCKET}}",
+  messagingSenderId: "{{FIREBASE_MESSAGING_SENDER_ID}}",
+  appId: "{{FIREBASE_APP_ID}}",
+  measurementId: "{{FIREBASE_MEASUREMENT_ID}}"
 };
 
 const app = initializeApp(firebaseConfig);
