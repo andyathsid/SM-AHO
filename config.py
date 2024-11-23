@@ -1,5 +1,5 @@
+from dotenv import load_dotenv
 import os
-
 class Config:
     FIREBASE_CONFIG = {
         "apiKey": os.environ.get('FIREBASE_API_KEY'),
